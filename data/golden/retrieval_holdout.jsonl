@@ -1,0 +1,8 @@
+{"id":"h01","query":"carrier says package undeliverable and the customer phone is unreachable","doc_id":"sop-address-03","section":"Steps"}
+{"id":"h02","query":"when does a refund need a team lead","doc_id":"sop-approval-05","section":"Refunds"}
+{"id":"h03","query":"SwiftPost metro lane delivery time","doc_id":"sla-carriers-06","section":"SwiftPost"}
+{"id":"h04","query":"no tracking update for 3 days, should I open a lost shipment investigation","doc_id":"sop-stuck-02","section":"Actions by silence"}
+{"id":"h05","query":"what do I do if the delay is under a day","doc_id":"sop-delay-01","section":"Actions by delay"}
+{"id":"h06","query":"damaged item and replacement stock is available, what resolution","doc_id":"sop-damaged-04","section":"Resolution"}
+{"id":"h07","query":"who do I escalate to for ExpressOne","doc_id":"sla-carriers-06","section":"ExpressOne"}
+{"id":"h08","query":"parcel returned to origin, what must happen before the refund","doc_id":"sop-address-03","section":"Return to origin"}
