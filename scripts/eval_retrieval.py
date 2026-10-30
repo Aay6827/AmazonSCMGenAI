@@ -4,7 +4,7 @@ from pathlib import Path
 
 import httpx
 
-BASE = "http://localhost:40001"
+BASE = "http://127.0.0.1:40001"
 GOLDEN = Path(__file__).resolve().parents[1] / "data" / "golden" / (sys.argv[1] if len(sys.argv) > 1 else "retrieval.jsonl")
 DEPTH = 10
 

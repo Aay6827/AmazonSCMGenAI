@@ -140,3 +140,8 @@ def test_golden_file_is_well_formed():
         assert not set(c["expect_actions"]) & set(c["forbid_actions"])
         assert set(c.get("expect_roles", {})) <= set(c["expect_actions"])
         assert c["expect_status"] in {"PENDING_APPROVAL", "NO_ACTION_NEEDED", "NEEDS_HUMAN", "INSUFFICIENT_CONTEXT"}
+
+def test_slow_triage_fails_latency_gate():
+    slow = result(trace=[{"step": "llm_generate", "ms": 3000.0}])
+    failed = {g["metric"] for g in evaluate_gates(aggregate([score_case(CASE, slow)])) if not g["passed"]}
+    assert failed == {"latency_ms_p95"}

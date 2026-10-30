@@ -4,7 +4,7 @@ from pathlib import Path
 
 import httpx
 
-BASE = "http://localhost:40005"
+BASE = "http://127.0.0.1:40005"
 OUT = Path(__file__).resolve().parents[1] / "docs" / "eval" / "latest.json"
 
 try:

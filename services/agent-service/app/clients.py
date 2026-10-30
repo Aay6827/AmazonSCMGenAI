@@ -33,9 +33,9 @@ def _call(service: str, method: str, url: str, **kwargs):
 
 class Backends:
     def __init__(self):
-        self.ops = os.getenv("OPS_URL", "http://localhost:40003")
-        self.retrieval = os.getenv("RETRIEVAL_URL", "http://localhost:40001")
-        self.llm = os.getenv("LLM_URL", "http://localhost:40002")
+        self.ops = os.getenv("OPS_URL", "http://127.0.0.1:40003")
+        self.retrieval = os.getenv("RETRIEVAL_URL", "http://127.0.0.1:40001")
+        self.llm = os.getenv("LLM_URL", "http://127.0.0.1:40002")
 
     def get_shipment(self, sid: str):
         return _call("ops-tools", "GET", f"{self.ops}/v1/shipments/{quote(sid, safe='')}")

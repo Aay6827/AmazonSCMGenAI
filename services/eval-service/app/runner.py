@@ -19,8 +19,8 @@ def load_golden() -> list[dict]:
 
 
 def execute_run(reset: bool = True, case_ids: list[str] | None = None) -> list[dict]:
-    agent = os.getenv("AGENT_URL", "http://localhost:40004")
-    ops = os.getenv("OPS_URL", "http://localhost:40003")
+    agent = os.getenv("AGENT_URL", "http://127.0.0.1:40004")
+    ops = os.getenv("OPS_URL", "http://127.0.0.1:40003")
     cases = load_golden()
     if case_ids:
         wanted = set(case_ids)

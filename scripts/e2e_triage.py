@@ -2,8 +2,8 @@ import sys
 
 import httpx
 
-AGENT = "http://localhost:40004"
-OPS = "http://localhost:40003"
+AGENT = "http://127.0.0.1:40004"
+OPS = "http://127.0.0.1:40003"
 
 # shipment -> (status, expected action types, expected source doc, hub issue expected)
 EXPECT = {

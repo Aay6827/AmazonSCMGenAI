@@ -27,7 +27,7 @@ def test_run_returns_report_and_stores_latest(monkeypatch):
     r = client.post("/v1/run")
     data = r.json()
     assert r.status_code == 200 and data["passed"] is True
-    assert data["metrics"]["cases"] == 1 and len(data["gates"]) == 9 and data["run_id"].startswith("EVAL-")
+    assert data["metrics"]["cases"] == 1 and len(data["gates"]) == 10 and data["run_id"].startswith("EVAL-")
     assert client.get("/v1/report/latest").json()["run_id"] == data["run_id"]
 
 
