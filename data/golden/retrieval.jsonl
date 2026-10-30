@@ -1,0 +1,12 @@
+{"id":"r01","query":"parcel has had no scan for 80 hours, what should I do","doc_id":"sop-stuck-02","section":"Actions by silence"}
+{"id":"r02","query":"shipment is 30 hours past SLA, what action do I take","doc_id":"sop-delay-01","section":"Actions by delay"}
+{"id":"r03","query":"customer gave a wrong address, how many times can I change it","doc_id":"sop-address-03","section":"Steps"}
+{"id":"r04","query":"after 3 failed delivery attempts when is the refund processed","doc_id":"sop-address-03","section":"Return to origin"}
+{"id":"r05","query":"customer says item arrived damaged, how long do they have to report it","doc_id":"sop-damaged-04","section":"Evidence"}
+{"id":"r06","query":"who can approve a refund of 8000 rupees","doc_id":"sop-approval-05","section":"Refunds"}
+{"id":"r07","query":"reship with replacement cost 5000 who approves","doc_id":"sop-approval-05","section":"Reships"}
+{"id":"r08","query":"RoadRunner remote lane delivery time","doc_id":"sla-carriers-06","section":"RoadRunner Logistics"}
+{"id":"r09","query":"does SwiftPost deliver on public holidays","doc_id":"sla-carriers-06","section":"SwiftPost"}
+{"id":"r10","query":"can an L1 agent raise a carrier escalation ticket","doc_id":"sop-approval-05","section":"Carrier tickets"}
+{"id":"r11","query":"damage claim for item worth more than 5000 needs whose approval","doc_id":"sop-damaged-04","section":"Carrier claim"}
+{"id":"r12","query":"how do I tell a hub problem from a single lost parcel","doc_id":"sop-stuck-02","section":"Diagnosis steps"}
