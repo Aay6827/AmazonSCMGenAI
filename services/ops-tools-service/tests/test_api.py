@@ -153,3 +153,18 @@ def test_metrics_exposed():
     client.get("/v1/shipments/SHP-1001")
     text = client.get("/metrics").text
     assert "ops_tool_calls_total" in text and "ops_actions_total" in text
+
+def test_admin_reset_is_disabled_by_default(monkeypatch):
+    monkeypatch.delenv("ENABLE_TEST_ENDPOINTS", raising=False)
+    assert client.post("/v1/admin/reset").status_code == 404
+
+
+def test_admin_reset_restores_seed_state(monkeypatch):
+    monkeypatch.setenv("ENABLE_TEST_ENDPOINTS", "1")
+    aid = propose("SHP-1007", "reship").json()["action_id"]
+    approve(aid, "TEAM_LEAD")
+    execute(aid)
+    assert client.get("/v1/inventory/sku-A").json()["units"] == 4
+    assert client.post("/v1/admin/reset").json() == {"reset": True}
+    assert client.get("/v1/inventory/sku-A").json()["units"] == 5
+    assert client.get("/v1/actions").json()["actions"] == []

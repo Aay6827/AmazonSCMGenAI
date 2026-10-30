@@ -196,3 +196,15 @@ def execute_action(aid: str, req: ExecuteRequest):
         a.update(status="EXECUTED", executed_by=req.executed_by, result=result)
         ACTIONS.labels(t, "executed").inc()
         return a
+
+import os  # noqa: E402
+
+
+@app.post("/v1/admin/reset")
+def admin_reset():
+    """Test hook: restore seed data. Disabled unless ENABLE_TEST_ENDPOINTS=1."""
+    if os.getenv("ENABLE_TEST_ENDPOINTS") != "1":
+        raise HTTPException(404, "not found")
+    with store.lock:
+        store.reset()
+    return {"reset": True}
