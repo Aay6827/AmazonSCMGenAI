@@ -32,3 +32,13 @@ def test_empty_index_and_stopword_only_queries():
     assert idx.search("anything", 3) == []
     idx.build([("a", "some text here")])
     assert idx.search("the of", 3) == []
+
+def test_currency_alias_matches_inr():
+    assert tokenize("refund of 8000 rupees") == ["refund", "8000", "inr"]
+    idx = BM25Index()
+    idx.build([("a", "refunds up to INR 2000 need approval"), ("b", "carrier delay notice")])
+    assert idx.search("approve 2000 rupees", 2)[0][0] == "a"
+
+
+def test_default_length_normalisation_is_tuned_value():
+    assert BM25Index().b == 0.5

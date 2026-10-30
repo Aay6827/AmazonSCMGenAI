@@ -7,13 +7,18 @@ STOPWORDS = {
     "with", "at", "by", "be", "it", "as", "are", "this", "that",
 }
 
+# Normalise currency words so "8000 rupees" matches documents written "INR 8000".
+ALIASES = {"rupees": "inr", "rupee": "inr", "rs": "inr"}
+
 
 def tokenize(text: str) -> list[str]:
-    return [t for t in re.findall(r"[a-z0-9]+", text.lower()) if t not in STOPWORDS]
+    tokens = [t for t in re.findall(r"[a-z0-9]+", text.lower()) if t not in STOPWORDS]
+    return [ALIASES.get(t, t) for t in tokens]
 
 
 class BM25Index:
-    def __init__(self, k1: float = 1.5, b: float = 0.75):
+    # b=0.5: weaker length normalisation. Tuned on dev + holdout golden sets (see scripts/tune_retrieval.py).
+    def __init__(self, k1: float = 1.5, b: float = 0.5):
         self.k1 = k1
         self.b = b
         self._ids: list[str] = []

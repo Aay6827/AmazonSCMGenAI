@@ -5,7 +5,7 @@ from pathlib import Path
 import httpx
 
 BASE = "http://localhost:40001"
-GOLDEN = Path(__file__).resolve().parents[1] / "data" / "golden" / "retrieval.jsonl"
+GOLDEN = Path(__file__).resolve().parents[1] / "data" / "golden" / (sys.argv[1] if len(sys.argv) > 1 else "retrieval.jsonl")
 DEPTH = 10
 
 rows = [json.loads(line) for line in GOLDEN.read_text(encoding="utf-8-sig").splitlines() if line.strip()]
