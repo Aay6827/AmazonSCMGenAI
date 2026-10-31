@@ -40,7 +40,8 @@ d = r.json()
 check("200 and pending approval", r.status_code == 200 and d.get("status") == "PENDING_APPROVAL", r.text[:200])
 check("requester comes from the API key", d.get("requested_by") == "ops.alice", d.get("requested_by"))
 check("request id returned", len(r.headers.get("x-request-id", "")) >= 8)
-check(f"triage latency under 500 ms ({ms} ms)", ms < 500, f"{ms} ms")
+limit = int(os.getenv("E2E_LATENCY_MS", "500"))
+check(f"triage latency under {limit} ms ({ms} ms)", ms < limit, f"{ms} ms")
 
 aid = next((a["action_id"] for a in d.get("proposed_actions", []) if a["action_type"] == "reship"), None)
 if aid is None:

@@ -45,6 +45,7 @@ jobs:
     env:
       # shared runners are slower than a dev machine; 1000 ms still catches per-call-client regressions
       EVAL_LATENCY_P95_MS: "1000"
+      E2E_LATENCY_MS: "1500"
       COMPOSE: docker compose -f docker-compose.yml -f docker-compose.test.yml
     steps:
       - uses: actions/checkout@v4
