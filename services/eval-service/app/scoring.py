@@ -11,8 +11,8 @@ DEFAULT_GATES = {
     "citation_valid_rate": ("min", 1.0),
     "degraded_cases": ("max", 0),
     "section_hit_rate": ("min", 0.8),
-    "latency_ms_p95": ("max", 2000),
-    "latency_ms_p95": ("max", 2000),
+    "latency_ms_p95": ("max", 250),
+    "latency_ms_p95": ("max", 250),
 }
 
 

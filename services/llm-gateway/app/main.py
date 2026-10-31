@@ -108,3 +108,14 @@ def generate(req: GenerateRequest):
     )
     _cache.put(key, resp)
     return resp
+
+import os  # noqa: E402
+
+
+@app.post("/v1/admin/reset")
+def admin_reset():
+    """Test hook: empty the response cache. Disabled unless ENABLE_TEST_ENDPOINTS=1."""
+    if os.getenv("ENABLE_TEST_ENDPOINTS") != "1":
+        raise HTTPException(404, "not found")
+    _cache.clear()
+    return {"reset": True}

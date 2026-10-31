@@ -69,3 +69,16 @@ def test_metrics_exposed():
     assert r.status_code == 200
     assert "llm_requests_total" in r.text
     assert "llm_tokens_total" in r.text
+
+def test_admin_reset_is_disabled_by_default(monkeypatch):
+    monkeypatch.delenv("ENABLE_TEST_ENDPOINTS", raising=False)
+    assert client.post("/v1/admin/reset").status_code == 404
+
+
+def test_admin_reset_clears_the_cache(monkeypatch):
+    monkeypatch.setenv("ENABLE_TEST_ENDPOINTS", "1")
+    body = _body("Reset probe 9921 [SOURCE:reset-test]")
+    client.post("/v1/generate", json=body)
+    assert client.post("/v1/generate", json=body).json()["cache_hit"] is True
+    assert client.post("/v1/admin/reset").json() == {"reset": True}
+    assert client.post("/v1/generate", json=body).json()["cache_hit"] is False

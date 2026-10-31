@@ -1,0 +1,12 @@
+# Test overlay: reset hooks on, eval-service reachable from the host (loopback only).
+# Never combine this file with a real deployment.
+services:
+  ops-tools-service:
+    environment:
+      ENABLE_TEST_ENDPOINTS: "1"
+  llm-gateway:
+    environment:
+      ENABLE_TEST_ENDPOINTS: "1"
+  eval-service:
+    ports:
+      - "127.0.0.1:40005:40005"

@@ -22,5 +22,9 @@ class LRUCache:
             while len(self._data) > self._capacity:
                 self._data.popitem(last=False)
 
+    def clear(self):
+        with self._lock:
+            self._data.clear()
+
     def __len__(self):
         return len(self._data)

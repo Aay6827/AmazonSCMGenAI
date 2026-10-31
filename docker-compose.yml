@@ -1,0 +1,126 @@
+name: amazonscmgenai
+
+x-hardened: &hardened
+  restart: unless-stopped
+  read_only: true
+  tmpfs:
+    - /tmp
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  retrieval-service:
+    <<: *hardened
+    build: ./services/retrieval-service
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40001/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+
+  llm-gateway:
+    <<: *hardened
+    build: ./services/llm-gateway
+    environment:
+      LLM_PROVIDER: stub
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40002/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+
+  ops-tools-service:
+    <<: *hardened
+    build: ./services/ops-tools-service
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40003/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+
+  ingest-service:
+    <<: *hardened
+    build: ./services/ingest-service
+    environment:
+      RETRIEVAL_URL: http://retrieval-service:40001
+      DATA_DIR: /data/sops
+    volumes:
+      - ./data:/data:ro
+    depends_on:
+      retrieval-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40000/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+
+  agent-service:
+    <<: *hardened
+    build: ./services/agent-service
+    environment:
+      OPS_URL: http://ops-tools-service:40003
+      RETRIEVAL_URL: http://retrieval-service:40001
+      LLM_URL: http://llm-gateway:40002
+    depends_on:
+      ops-tools-service:
+        condition: service_healthy
+      retrieval-service:
+        condition: service_healthy
+      llm-gateway:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40004/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+
+  eval-service:
+    <<: *hardened
+    build: ./services/eval-service
+    environment:
+      AGENT_URL: http://agent-service:40004
+      OPS_URL: http://ops-tools-service:40003
+      LLM_URL: http://llm-gateway:40002
+      GOLDEN_PATH: /data/golden/agent.jsonl
+    volumes:
+      - ./data:/data:ro
+    depends_on:
+      agent-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40005/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
+
+  api-gateway:
+    <<: *hardened
+    build: ./services/api-gateway
+    ports:
+      - "127.0.0.1:40006:40006"
+    environment:
+      API_KEYS: ${API_KEYS:?set API_KEYS in .env (copy .env.example)}
+      INGEST_URL: http://ingest-service:40000
+      RETRIEVAL_URL: http://retrieval-service:40001
+      LLM_URL: http://llm-gateway:40002
+      OPS_URL: http://ops-tools-service:40003
+      AGENT_URL: http://agent-service:40004
+      EVAL_URL: http://eval-service:40005
+    depends_on:
+      agent-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:40006/health', timeout=3)"]
+      interval: 5s
+      timeout: 4s
+      retries: 12
+      start_period: 5s
