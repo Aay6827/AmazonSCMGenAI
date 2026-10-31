@@ -150,3 +150,12 @@ def test_slow_triage_fails_latency_gate():
     slow = result(trace=[{"step": "llm_generate", "ms": 3000.0}])
     failed = {g["metric"] for g in evaluate_gates(aggregate([score_case(CASE, slow)])) if not g["passed"]}
     assert failed == {"latency_ms_p95"}
+
+def test_latency_gate_threshold_can_be_overridden_by_env(monkeypatch):
+    monkeypatch.delenv("EVAL_LATENCY_P95_MS", raising=False)
+    slow = aggregate([score_case(CASE, result(trace=[{"step": "x", "ms": 400.0}]))])
+    assert {g["metric"] for g in evaluate_gates(slow) if not g["passed"]} == {"latency_ms_p95"}
+    monkeypatch.setenv("EVAL_LATENCY_P95_MS", "1000")
+    gates = evaluate_gates(slow)
+    assert all(g["passed"] for g in gates)
+    assert next(g for g in gates if g["metric"] == "latency_ms_p95")["rule"] == "<= 1000.0"

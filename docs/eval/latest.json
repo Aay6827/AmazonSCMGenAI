@@ -1,6 +1,6 @@
 {
-  "run_id": "EVAL-e89c2f2c",
-  "ran_at": "2026-10-31T03:06:06.232243+00:00",
+  "run_id": "EVAL-a5ab2eca",
+  "ran_at": "2026-10-31T03:08:27.529839+00:00",
   "passed": true,
   "metrics": {
     "cases": 11,
@@ -16,8 +16,8 @@
     "degraded_cases": 0,
     "context_precision": 0.713,
     "latency_ms_p50": 32.9,
-    "latency_ms_p95": 60.8,
-    "avg_cost_usd": 0.0
+    "latency_ms_p95": 83.3,
+    "avg_cost_usd": 0.00015916
   },
   "gates": [
     {
@@ -76,8 +76,8 @@
     },
     {
       "metric": "latency_ms_p95",
-      "value": 60.8,
-      "rule": "<= 2000",
+      "value": 83.3,
+      "rule": "<= 250",
       "passed": true
     }
   ],
@@ -107,8 +107,8 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 60.8,
-      "cost_usd": 0.0
+      "latency_ms": 83.3,
+      "cost_usd": 0.0001945
     },
     {
       "id": "e02",
@@ -135,7 +135,7 @@
       "hub_ok": true,
       "degraded": [],
       "latency_ms": 32.9,
-      "cost_usd": 0.0
+      "cost_usd": 0.00016475
     },
     {
       "id": "e03",
@@ -161,8 +161,8 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 24.1,
-      "cost_usd": 0.0
+      "latency_ms": 30.1,
+      "cost_usd": 0.00017625
     },
     {
       "id": "e04",
@@ -189,8 +189,8 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 34.5,
-      "cost_usd": 0.0
+      "latency_ms": 34.9,
+      "cost_usd": 0.000172
     },
     {
       "id": "e05",
@@ -214,7 +214,7 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 4.1,
+      "latency_ms": 5.1,
       "cost_usd": 0.0
     },
     {
@@ -241,8 +241,8 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 31.6,
-      "cost_usd": 0.0
+      "latency_ms": 27.7,
+      "cost_usd": 0.00017
     },
     {
       "id": "e07",
@@ -269,8 +269,8 @@
       "citations_valid": true,
       "hub_ok": true,
       "degraded": [],
-      "latency_ms": 35.1,
-      "cost_usd": 0.0
+      "latency_ms": 37.8,
+      "cost_usd": 0.00018275
     },
     {
       "id": "e08",
@@ -297,8 +297,8 @@
       "citations_valid": true,
       "hub_ok": true,
       "degraded": [],
-      "latency_ms": 37.5,
-      "cost_usd": 0.0
+      "latency_ms": 36.8,
+      "cost_usd": 0.00017825
     },
     {
       "id": "e09",
@@ -325,8 +325,8 @@
       "citations_valid": true,
       "hub_ok": true,
       "degraded": [],
-      "latency_ms": 37.9,
-      "cost_usd": 0.0
+      "latency_ms": 35.1,
+      "cost_usd": 0.00017825
     },
     {
       "id": "e10",
@@ -352,8 +352,8 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 29.2,
-      "cost_usd": 0.0
+      "latency_ms": 29.8,
+      "cost_usd": 0.00017525
     },
     {
       "id": "e11",
@@ -380,8 +380,8 @@
       "citations_valid": true,
       "hub_ok": null,
       "degraded": [],
-      "latency_ms": 27.0,
-      "cost_usd": 0.0
+      "latency_ms": 32.3,
+      "cost_usd": 0.00015875
     }
   ]
 }

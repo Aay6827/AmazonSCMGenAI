@@ -1,4 +1,5 @@
 import math
+import os
 
 # Hard gates for a clean deterministic run. ("min" = value must be >= limit, "max" = value must be <= limit)
 DEFAULT_GATES = {
@@ -137,9 +138,18 @@ def aggregate(scores: list[dict]) -> dict:
     }
 
 
+def _effective(gates: dict) -> dict:
+    """CI runners are slower than a dev machine: allow the p95 latency limit to be raised via env."""
+    gates = dict(gates)
+    override = os.getenv("EVAL_LATENCY_P95_MS")
+    if override:
+        gates["latency_ms_p95"] = ("max", float(override))
+    return gates
+
+
 def evaluate_gates(metrics: dict, gates: dict = DEFAULT_GATES) -> list[dict]:
     out = []
-    for name, (kind, limit) in gates.items():
+    for name, (kind, limit) in _effective(gates).items():
         value = metrics[name]
         ok = value >= limit if kind == "min" else value <= limit
         out.append({"metric": name, "value": value, "rule": f"{'>=' if kind == 'min' else '<='} {limit}", "passed": ok})

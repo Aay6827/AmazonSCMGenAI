@@ -11,7 +11,9 @@ from app.client import push_chunks
 
 app = FastAPI(title="ingest-service", version="0.1.0")
 
-DEFAULT_DIR = Path(__file__).resolve().parents[3] / "data" / "sops"
+# repo root is parents[3] on a checkout; too shallow inside a container, so fall back to / (DATA_DIR points at the mount there)
+_PARENTS = Path(__file__).resolve().parents
+DEFAULT_DIR = (_PARENTS[3] if len(_PARENTS) > 3 else Path("/")) / "data" / "sops"
 INGESTED = Counter("ingest_chunks_total", "Chunks produced", ["mode"])
 
 

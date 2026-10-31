@@ -42,7 +42,10 @@ check("requester comes from the API key", d.get("requested_by") == "ops.alice", 
 check("request id returned", len(r.headers.get("x-request-id", "")) >= 8)
 check(f"triage latency under 500 ms ({ms} ms)", ms < 500, f"{ms} ms")
 
-aid = next(a["action_id"] for a in d["proposed_actions"] if a["action_type"] == "reship")
+aid = next((a["action_id"] for a in d.get("proposed_actions", []) if a["action_type"] == "reship"), None)
+if aid is None:
+    print(f"\nno reship was proposed (status {d.get('status')}); is the corpus ingested?")
+    sys.exit(1)
 base = f"{GW}/v1/triage/{d['triage_id']}/actions/{aid}"
 
 print("Approval roles come from the key")

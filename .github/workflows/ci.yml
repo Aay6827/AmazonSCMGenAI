@@ -1,0 +1,85 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [ingest-service, retrieval-service, llm-gateway, ops-tools-service, agent-service, eval-service, api-gateway]
+    defaults:
+      run:
+        working-directory: services/${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt pytest httpx
+      - run: pytest -q
+
+  retrieval-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/check_retrieval.py
+
+  compose-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # shared runners are slower than a dev machine; 1000 ms still catches per-call-client regressions
+      EVAL_LATENCY_P95_MS: "1000"
+      COMPOSE: docker compose -f docker-compose.yml -f docker-compose.test.yml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - run: cp .env.example .env
+      - name: Build and start the stack
+        run: $COMPOSE up -d --build --wait
+      - name: Ingest the corpus
+        run: |
+          $COMPOSE exec -T ingest-service python -c "import urllib.request as u; r = u.urlopen(u.Request('http://127.0.0.1:40000/v1/ingest', method='POST'), timeout=30); print('ingest status', r.status)"
+      - name: Agent eval (quality gates)
+        run: python scripts/run_eval.py
+      - name: Gateway end-to-end
+        run: SKIP_OPS_RESET=1 python scripts/e2e_gateway.py
+      - name: Internal services are not published
+        run: |
+          for p in 40000 40001 40002 40003 40004; do
+            if curl -s --max-time 2 -o /dev/null "http://127.0.0.1:$p/health"; then
+              echo "port $p is reachable from the host"; exit 1
+            fi
+          done
+          echo "internal ports are not reachable from the host"
+      - name: Container logs on failure
+        if: failure()
+        run: $COMPOSE logs --tail 60
+      - name: Upload eval report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: docs/eval/latest.json
+          if-no-files-found: ignore
+      - name: Tear down
+        if: always()
+        run: $COMPOSE down -v

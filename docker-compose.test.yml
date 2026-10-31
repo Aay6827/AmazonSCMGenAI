@@ -8,5 +8,7 @@ services:
     environment:
       ENABLE_TEST_ENDPOINTS: "1"
   eval-service:
+    environment:
+      EVAL_LATENCY_P95_MS: ${EVAL_LATENCY_P95_MS:-250}
     ports:
       - "127.0.0.1:40005:40005"

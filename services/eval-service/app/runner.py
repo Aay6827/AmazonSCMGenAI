@@ -6,7 +6,9 @@ import httpx
 
 from app.scoring import score_case
 
-DEFAULT_GOLDEN = Path(__file__).resolve().parents[3] / "data" / "golden" / "agent.jsonl"
+# repo root is parents[3] on a checkout; too shallow inside a container, so fall back to / (GOLDEN_PATH points at the mount there)
+_PARENTS = Path(__file__).resolve().parents
+DEFAULT_GOLDEN = (_PARENTS[3] if len(_PARENTS) > 3 else Path("/")) / "data" / "golden" / "agent.jsonl"
 
 # Shared client: a new one per call costs ~220 ms here (TLS context setup).
 CLIENT = httpx.Client(timeout=30)
