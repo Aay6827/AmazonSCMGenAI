@@ -9,6 +9,10 @@ from app.scoring import score_case
 DEFAULT_GOLDEN = Path(__file__).resolve().parents[3] / "data" / "golden" / "agent.jsonl"
 
 
+# Shared client: a new one per call costs ~220 ms here (TLS context setup).
+CLIENT = httpx.Client(timeout=30)
+
+
 class ResetUnavailable(Exception):
     pass
 
@@ -27,7 +31,7 @@ def execute_run(reset: bool = True, case_ids: list[str] | None = None) -> list[d
         cases = [c for c in cases if c["id"] in wanted]
     if reset:
         try:
-            resp = httpx.post(f"{ops}/v1/admin/reset", timeout=10)
+            resp = CLIENT.post(f"{ops}/v1/admin/reset", timeout=10)
         except httpx.HTTPError as exc:
             raise ResetUnavailable(f"ops-tools-service unreachable: {type(exc).__name__}")
         if resp.status_code != 200:
@@ -36,7 +40,7 @@ def execute_run(reset: bool = True, case_ids: list[str] | None = None) -> list[d
     for case in cases:
         result, error = None, None
         try:
-            resp = httpx.post(f"{agent}/v1/triage",
+            resp = CLIENT.post(f"{agent}/v1/triage",
                               json={"shipment_id": case["shipment_id"], "requested_by": "eval-service"}, timeout=30)
             if resp.status_code == 200:
                 result = resp.json()

@@ -145,3 +145,8 @@ def test_slow_triage_fails_latency_gate():
     slow = result(trace=[{"step": "llm_generate", "ms": 3000.0}])
     failed = {g["metric"] for g in evaluate_gates(aggregate([score_case(CASE, slow)])) if not g["passed"]}
     assert failed == {"latency_ms_p95"}
+
+def test_slow_triage_fails_latency_gate():
+    slow = result(trace=[{"step": "llm_generate", "ms": 3000.0}])
+    failed = {g["metric"] for g in evaluate_gates(aggregate([score_case(CASE, slow)])) if not g["passed"]}
+    assert failed == {"latency_ms_p95"}

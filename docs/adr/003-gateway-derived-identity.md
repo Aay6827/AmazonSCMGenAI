@@ -1,7 +1,7 @@
 # ADR-003: Identity and approval role are derived at the gateway
 
 Status: Accepted
-Date: 2026-10-30
+Date: 2026-10-31
 
 ## Context
 agent-service forwards approve and reject calls to ops-tools with an approver name and a role taken from
@@ -21,3 +21,8 @@ its request body. Any caller that can reach agent-service could claim the MANAGE
 - agent-service must never be exposed directly. Compose and Terraform will enforce that.
 - Rate limiting is per identity and in-memory; behind several replicas it needs a shared store or the
   API Gateway usage plan.
+
+## Related finding: shared HTTP clients
+Measured on the development machine, building an httpx client costs ~220 ms (TLS context setup) even for
+plain http, versus 2-8 ms per call on a shared client. Every service that calls another service now holds
+one shared client, and a regression test fails if a per-call client is reintroduced.

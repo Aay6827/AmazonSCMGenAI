@@ -14,7 +14,7 @@ def test_load_keys_parses_entries():
 def test_load_keys_rejects_bad_config_without_echoing_keys(raw):
     with pytest.raises(ValueError) as exc:
         load_keys(raw)
-    assert "longenough1" not in str(exc.value) and "tiny" not in str(exc.value).replace("shorter", "")
+    assert "longenough1" not in str(exc.value) and "tiny" not in str(exc.value)
 
 
 def test_token_bucket_burst_refill_and_isolation():

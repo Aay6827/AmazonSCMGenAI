@@ -12,6 +12,7 @@ DEFAULT_GATES = {
     "degraded_cases": ("max", 0),
     "section_hit_rate": ("min", 0.8),
     "latency_ms_p95": ("max", 2000),
+    "latency_ms_p95": ("max", 2000),
 }
 
 

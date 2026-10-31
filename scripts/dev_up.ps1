@@ -10,5 +10,5 @@ foreach ($name in $ports.Keys) {
   if (-not (Test-Path (Join-Path $dir "app\main.py"))) { continue }
   Start-Process powershell -ArgumentList "-NoExit","-Command","cd '$dir'; & '$root\.venv\Scripts\Activate.ps1'; uvicorn app.main:app --port $port"
 }
-Start-Sleep -Seconds 9
+Start-Sleep -Seconds 10
 try { Invoke-RestMethod -Uri http://127.0.0.1:40000/v1/ingest -Method Post | Out-Null; Write-Host "ingested corpus" } catch { Write-Host "ingest failed: $_" }
