@@ -5,7 +5,7 @@ $env:API_KEYS = "dev-l1-key-01:ops.alice:L1,dev-lead-key-1:lead.bob:TEAM_LEAD,de
 $ports = [ordered]@{ "ingest-service" = 40000; "retrieval-service" = 40001; "llm-gateway" = 40002; "ops-tools-service" = 40003; "agent-service" = 40004; "eval-service" = 40005; "api-gateway" = 40006 }
 foreach ($name in $ports.Keys) {
   $port = $ports[$name]
-  Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+  Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | ForEach-Object { $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; if ($proc -and $proc.ProcessName -like "python*") { Stop-Process -Id $proc.Id -Force } elseif ($proc) { Write-Host "port $port is held by $($proc.ProcessName) (pid $($proc.Id)); leaving it alone" } }
   $dir = Join-Path $root "services\$name"
   if (-not (Test-Path (Join-Path $dir "app\main.py"))) { continue }
   Start-Process powershell -ArgumentList "-NoExit","-Command","cd '$dir'; & '$root\.venv\Scripts\Activate.ps1'; uvicorn app.main:app --port $port"
