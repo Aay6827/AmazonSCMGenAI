@@ -1,4 +1,6 @@
-﻿# AmazonSCMGenAI - Architecture
+# AmazonSCMGenAI - Architecture
+
+> **Status:** original design sketch. The implementation diverges in one deliberate way: the LLM does not receive tools or choose actions; a rule-based planner does (see [ADR-002](adr/002-deterministic-planner-llm-explains.md)). The sequence diagram below predates that decision.
 
 ## 1. Problem
 Fulfilment operations teams handle thousands of shipment exceptions a day (delayed, stuck in transit,
