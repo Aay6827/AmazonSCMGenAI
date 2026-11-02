@@ -1,7 +1,7 @@
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
-docker ps -q 2>$null | Out-Null
-if ($LASTEXITCODE -ne 0) { Write-Host "Docker is not running. Start Docker Desktop and try again."; exit 1 }
+$engine = (docker info --format "{{.ServerVersion}}" 2>&1 | Out-String).Trim(); $LASTEXITCODE = [int]($engine -notmatch '^\d+\.\d+')
+if ($engine -notmatch "^\d+\.\d+") { Write-Host "Docker is not running. Start Docker Desktop and try again."; exit 1 }
 # free the ports used by the local (non-container) dev stack
 foreach ($port in 40000..40006) { Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force } }
 if (-not (Test-Path .env)) { Copy-Item .env.example .env; Write-Host "created .env from .env.example (local dev keys)" }
